@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora IRRF 2026</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #11998e;
+        }
+
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #11998e;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(17, 153, 142, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-limpar {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+        }
+
+        .btn-limpar:hover {
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .btn-pdf {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            display: none;
+        }
+
+        .btn-pdf.show {
+            display: block;
+        }
+
+        .btn-pdf:hover {
+            box-shadow: 0 10px 25px rgba(220, 53, 69, 0.4);
+        }
+
+        .result {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f0fff4;
+            border-radius: 15px;
+            border-left: 5px solid #11998e;
+            display: none;
+        }
+
+        .result.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .result-label {
+            color: #666;
+            font-weight: 500;
+        }
+
+        .result-value {
+            color: #333;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .result-value.highlight {
+            color: #11998e;
+            font-size: 22px;
+        }
+
+        .info {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 25px;
+            color: #856404;
+            font-size: 13px;
+        }
+
+        .info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .passos {
+            margin-top: 30px;
+            padding: 25px;
+            background: #f0fff4;
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+            display: none;
+        }
+
+        .passos.show {
+            display: block;
+            animation: slideIn 0.5s ease;
+        }
+
+        .passos h2 {
+            color: #333;
+            font-size: 20px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .passo-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            border-left: 3px solid #4CAF50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .passo-item strong {
+            color: #4CAF50;
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .passo-item .formula {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            margin: 8px 0;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .passo-item .resultado {
+            color: #11998e;
+            font-weight: 700;
+            margin-top: 8px;
+            font-size: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Calculadora IRRF 2026</h1>
+        
+        <div class="info">
+            <strong>📌 Nova regra:</strong>
+            Quem ganha até R$ 5.000,00 está isento. Entre R$ 5.000,01 e R$ 7.350,00 há um redutor adicional aplicado.
+        </div>
+
+        <div class="input-group">
+            <label for="salario">Salário Bruto (R$)</label>
+            <input type="number" id="salario" placeholder="Digite o salário bruto" step="0.01" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="previdencia">Previdência - INSS/RPPS (R$)</label>
+            <input type="number" id="previdencia" placeholder="Digite o valor da previdência" step="0.01" min="0" value="0">
+        </div>
+
+        <div class="input-group">
+            <label for="aposentado">Aposentado 65 anos ou mais?</label>
+            <select id="aposentado">
+                <option value="NAO">NÃO</option>
+                <option value="SIM">SIM</option>
+            </select>
+        </div>
+
+        <div class="input-group">
+            <label for="dependentes">Número de Dependentes</label>
+            <input type="number" id="dependentes" placeholder="Digite o número de dependentes" value="0" min="0">
+        </div>
+
+        <button onclick="calcularIRRF()">Calcular IRRF</button>
+        
+        <button class="btn-limpar" onclick="limparDados()">🔄 Limpar e Iniciar Novo Cálculo</button>
+        
+        <button class="btn-pdf" id="btnPdf" onclick="salvarPDF()">📄 Salvar Resultado em PDF</button>
+
+        <div class="result" id="result">
+            <div class="result-item">
+                <span class="result-label">Salário Bruto:</span>
+                <span class="result-value" id="salarioBruto">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Previdência (INSS/RPPS):</span>
+                <span class="result-value" id="valorPrevidencia">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Dedução Dependentes:</span>
+                <span class="result-value" id="deducaoDependentes">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Base de Cálculo:</span>
+                <span class="result-value" id="baseCalculo">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Alíquota:</span>
+                <span class="result-value" id="aliquota">0%</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Dedução Padrão:</span>
+                <span class="result-value" id="deducao">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Redutor Adicional:</span>
+                <span class="result-value" id="redutor">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">IRRF a Pagar:</span>
+                <span class="result-value highlight" id="irrf">R$ 0,00</span>
+            </div>
+            <div class="result-item">
+                <span class="result-label">Salário Líquido:</span>
+                <span class="result-value highlight" id="liquido">R$ 0,00</span>
+            </div>
+        </div>
+
+        <div class="passos" id="passos">
+            <h2>📊 Memória de Cálculo</h2>
+            <div id="passosList"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        const tabelaIRRF = [
+            { faixa1: 0, faixa2: 2428.81, aliquota: 0, deducao: 0 },
+            { faixa1: 2428.81, faixa2: 2826.65, aliquota: 7.5, deducao: 182.16 },
+            { faixa1: 2826.66, faixa2: 3751.05, aliquota: 15, deducao: 394.16 },
+            { faixa1: 3751.06, faixa2: 4664.68, aliquota: 22.5, deducao: 675.49 },
+            { faixa1: 4664.69, faixa2: Infinity, aliquota: 27.5, deducao: 908.73 }
+        ];
+
+        const deducaoPorDependente = 189.59;
+        const deducaoSimplificada = 607.20;
+        const deducaoAposentado = 1903.98;
+        let dadosCalculo = null;
+
+        function calcularIRRF() {
+            const salario = parseFloat(document.getElementById('salario').value) || 0;
+            const previdencia = parseFloat(document.getElementById('previdencia').value) || 0;
+            const aposentado = document.getElementById('aposentado').value;
+            const dependentes = parseInt(document.getElementById('dependentes').value) || 0;
+
+            if (salario <= 0) {
+                alert('Por favor, digite um salário válido.');
+                return;
+            }
+
+            let passos = [];
+
+            // Passo 1: Salário informado
+            passos.push({
+                titulo: 'Passo 1: Dados Informados',
+                conteudo: `Salário Bruto: ${formatarMoeda(salario)}<br>
+                          Previdência (INSS/RPPS): ${formatarMoeda(previdencia)}<br>
+                          Aposentado/Pensionista: ${aposentado === 'SIM' ? 'SIM' : 'NÃO'}<br>
+                          Número de Dependentes: ${dependentes}`
+            });
+
+            // Isento até R$ 5.000,00
+            if (salario <= 5000) {
+                passos.push({
+                    titulo: 'Passo 2: Verificação de Isenção',
+                    conteudo: `Como o salário bruto (${formatarMoeda(salario)}) é menor ou igual a R$ 5.000,00, você está <strong style="color: #4CAF50;">ISENTO</strong> do IRRF conforme a nova regra de 2026.`
+                });
+                mostrarResultado(salario, previdencia, 0, salario, 0, 0, 0, 0, salario - previdencia);
+                mostrarPassos(passos);
+                
+                // Armazena os dados para o PDF (caso isento)
+                dadosCalculo = {
+                    salario,
+                    previdencia,
+                    dependentes: 0,
+                    deducaoDependentes: 0,
+                    baseCalculo: salario,
+                    aliquota: 0,
+                    deducao: 0,
+                    redutorAdicional: 0,
+                    irrf: 0,
+                    salarioLiquido: salario - previdencia,
+                    passos
+                };
+                
+                // Mostra o botão de PDF
+                document.getElementById('btnPdf').classList.add('show');
+                return;
+            }
+
+            // Passo 2: Dedução por dependentes
+            const deducaoDependentes = dependentes * deducaoPorDependente;
+            if (dependentes > 0) {
+                passos.push({
+                    titulo: 'Passo 2: Dedução por Dependentes',
+                    formula: `Dedução = ${dependentes} dependente(s) × ${formatarMoeda(deducaoPorDependente)}`,
+                    resultado: `Dedução por Dependentes = ${formatarMoeda(deducaoDependentes)}`
+                });
+            } else {
+                passos.push({
+                    titulo: 'Passo 2: Dedução por Dependentes',
+                    conteudo: 'Nenhum dependente informado. Dedução = R$ 0,00'
+                });
+            }
+
+            // Passo 3: Verificação da regra de dedução (Previdência + Dependentes vs 607,20)
+            const somaPrevidenciaDependentes = previdencia + deducaoDependentes;
+            let deducaoAplicada = 0;
+            let tipoDeducao = '';
+            
+            if (somaPrevidenciaDependentes > deducaoSimplificada) {
+                deducaoAplicada = somaPrevidenciaDependentes;
+                tipoDeducao = 'Previdência + Dependentes';
+                passos.push({
+                    titulo: 'Passo 3: Escolha do Tipo de Dedução',
+                    conteudo: `Soma: Previdência + Dependentes = ${formatarMoeda(previdencia)} + ${formatarMoeda(deducaoDependentes)} = ${formatarMoeda(somaPrevidenciaDependentes)}<br>
+                              Dedução Simplificada = ${formatarMoeda(deducaoSimplificada)}<br><br>
+                              Como ${formatarMoeda(somaPrevidenciaDependentes)} > ${formatarMoeda(deducaoSimplificada)}, utiliza-se a <strong>dedução de Previdência + Dependentes</strong>.`,
+                    resultado: `Dedução Aplicada = ${formatarMoeda(deducaoAplicada)} (Previdência + Dependentes)`
+                });
+            } else {
+                deducaoAplicada = deducaoSimplificada;
+                tipoDeducao = 'Simplificada (R$ 607,20)';
+                passos.push({
+                    titulo: 'Passo 3: Escolha do Tipo de Dedução',
+                    conteudo: `Soma: Previdência + Dependentes = ${formatarMoeda(previdencia)} + ${formatarMoeda(deducaoDependentes)} = ${formatarMoeda(somaPrevidenciaDependentes)}<br>
+                              Dedução Simplificada = ${formatarMoeda(deducaoSimplificada)}<br><br>
+                              Como ${formatarMoeda(somaPrevidenciaDependentes)} ≤ ${formatarMoeda(deducaoSimplificada)}, utiliza-se a <strong>dedução simplificada</strong>.`,
+                    resultado: `Dedução Aplicada = ${formatarMoeda(deducaoAplicada)} (Simplificada)`
+                });
+            }
+
+            // Passo 4: Dedução adicional para aposentados/pensionistas
+            let deducaoAposentadoAplicada = 0;
+            if (aposentado === 'SIM') {
+                deducaoAposentadoAplicada = deducaoAposentado;
+                passos.push({
+                    titulo: 'Passo 4: Dedução para Aposentado/Pensionista',
+                    conteudo: `Como você é <strong>Aposentado/Pensionista</strong>, aplica-se uma dedução adicional de ${formatarMoeda(deducaoAposentado)}.`,
+                    resultado: `Dedução Aposentado/Pensionista = ${formatarMoeda(deducaoAposentadoAplicada)}`
+                });
+            } else {
+                passos.push({
+                    titulo: 'Passo 4: Dedução para Aposentado/Pensionista',
+                    conteudo: `Você <strong>NÃO</strong> é Aposentado/Pensionista, portanto não há dedução adicional.`,
+                    resultado: `Dedução Aposentado/Pensionista = R$ 0,00`
+                });
+            }
+
+            // Passo 5: Base de cálculo
+            const baseCalculo = salario - deducaoAplicada - deducaoAposentadoAplicada;
+            passos.push({
+                titulo: 'Passo 5: Cálculo da Base de Cálculo',
+                formula: `Base = Salário Bruto - Dedução Aplicada - Dedução Aposentado<br>
+                         Base = ${formatarMoeda(salario)} - ${formatarMoeda(deducaoAplicada)} - ${formatarMoeda(deducaoAposentadoAplicada)}`,
+                resultado: `Base de Cálculo = ${formatarMoeda(baseCalculo)}`
+            });
+
+            // Passo 5: Identificação da faixa
+            let faixa = tabelaIRRF.find(f => baseCalculo > f.faixa1 && baseCalculo <= f.faixa2);
+            
+            if (!faixa) {
+                faixa = tabelaIRRF[tabelaIRRF.length - 1];
+            }
+
+            passos.push({
+                titulo: 'Passo 6: Identificação da Faixa de IRRF',
+                conteudo: `Base de Cálculo: ${formatarMoeda(baseCalculo)}<br>
+                          Faixa identificada: ${formatarMoeda(faixa.faixa1)} a ${faixa.faixa2 === Infinity ? 'acima' : formatarMoeda(faixa.faixa2)}<br>
+                          Alíquota: ${faixa.aliquota}%<br>
+                          Dedução Simplificada: ${formatarMoeda(faixa.deducao)}`
+            });
+
+            // Passo 6: Cálculo do IRRF antes do redutor
+            let irrfSemRedutor = (baseCalculo * faixa.aliquota / 100) - faixa.deducao;
+            passos.push({
+                titulo: 'Passo 7: Cálculo do IRRF (sem redutor)',
+                formula: `IRRF = (Base de Cálculo × Alíquota) - Dedução Simplificada<br>
+                         IRRF = (${formatarMoeda(baseCalculo)} × ${faixa.aliquota}%) - ${formatarMoeda(faixa.deducao)}<br>
+                         IRRF = ${formatarMoeda(baseCalculo * faixa.aliquota / 100)} - ${formatarMoeda(faixa.deducao)}`,
+                resultado: `IRRF Calculado = ${formatarMoeda(irrfSemRedutor)}`
+            });
+
+            // Passo 7: Redutor adicional
+            let redutorAdicional = 0;
+            let irrf = irrfSemRedutor;
+            
+            if (salario > 5000 && salario <= 7350) {
+                redutorAdicional = 978.62 - (salario * 0.133145);
+                passos.push({
+                    titulo: 'Passo 8: Aplicação do Redutor Adicional',
+                    conteudo: `Como o salário está entre R$ 5.000,01 e R$ 7.350,00, aplica-se o redutor adicional:`,
+                    formula: `Redutor = 978,62 - (Salário × 0,133145)<br>
+                             Redutor = 978,62 - (${formatarMoeda(salario)} × 0,133145)<br>
+                             Redutor = 978,62 - ${formatarMoeda(salario * 0.133145)}`,
+                    resultado: `Redutor Adicional = ${formatarMoeda(redutorAdicional)}`
+                });
+
+                irrf = irrfSemRedutor - redutorAdicional;
+                passos.push({
+                    titulo: 'Passo 9: IRRF Final com Redutor',
+                    formula: `IRRF Final = IRRF Calculado - Redutor Adicional<br>
+                             IRRF Final = ${formatarMoeda(irrfSemRedutor)} - ${formatarMoeda(redutorAdicional)}`,
+                    resultado: `IRRF a Pagar = ${formatarMoeda(Math.max(0, irrf))}`
+                });
+            } else {
+                passos.push({
+                    titulo: 'Passo 8: Verificação do Redutor Adicional',
+                    conteudo: `O redutor adicional NÃO se aplica, pois o salário (${formatarMoeda(salario)}) está fora da faixa de R$ 5.000,01 a R$ 7.350,00.`,
+                    resultado: `IRRF a Pagar = ${formatarMoeda(Math.max(0, irrf))}`
+                });
+            }
+
+            // Garante que IRRF não seja negativo
+            if (irrf < 0) irrf = 0;
+
+            // Passo final: Salário líquido
+            const salarioLiquido = salario - previdencia - irrf;
+            const passoFinal = salario > 5000 && salario <= 7350 ? '10' : '9';
+            passos.push({
+                titulo: `Passo ${passoFinal}: Cálculo do Salário Líquido`,
+                formula: `Salário Líquido = Salário Bruto - Previdência - IRRF<br>
+                         Salário Líquido = ${formatarMoeda(salario)} - ${formatarMoeda(previdencia)} - ${formatarMoeda(irrf)}`,
+                resultado: `<span style="color: #11998e; font-size: 18px;">Salário Líquido = ${formatarMoeda(salarioLiquido)}</span>`
+            });
+
+            mostrarResultado(salario, previdencia, deducaoDependentes, baseCalculo, faixa.aliquota, faixa.deducao, redutorAdicional, irrf, salarioLiquido);
+            mostrarPassos(passos);
+            
+            // Armazena os dados para o PDF
+            dadosCalculo = {
+                salario,
+                previdencia,
+                aposentado: aposentado === 'SIM' ? 'SIM' : 'NÃO',
+                dependentes,
+                deducaoDependentes,
+                tipoDeducao,
+                deducaoAplicada,
+                deducaoAposentadoAplicada,
+                baseCalculo,
+                aliquota: faixa.aliquota,
+                deducao: faixa.deducao,
+                redutorAdicional,
+                irrf,
+                salarioLiquido,
+                passos
+            };
+            
+            // Mostra o botão de PDF
+            document.getElementById('btnPdf').classList.add('show');
+        }
+
+        function mostrarResultado(salario, prev, dedDep, base, aliq, ded, red, irrf, liq) {
+            document.getElementById('salarioBruto').textContent = formatarMoeda(salario);
+            document.getElementById('valorPrevidencia').textContent = formatarMoeda(prev);
+            document.getElementById('deducaoDependentes').textContent = formatarMoeda(dedDep);
+            document.getElementById('baseCalculo').textContent = formatarMoeda(base);
+            document.getElementById('aliquota').textContent = aliq + '%';
+            document.getElementById('deducao').textContent = formatarMoeda(ded);
+            document.getElementById('redutor').textContent = formatarMoeda(red);
+            document.getElementById('irrf').textContent = formatarMoeda(irrf);
+            document.getElementById('liquido').textContent = formatarMoeda(liq);
+            
+            document.getElementById('result').classList.add('show');
+        }
+
+        function mostrarPassos(passos) {
+            const passosContainer = document.getElementById('passosList');
+            passosContainer.innerHTML = '';
+            
+            passos.forEach(passo => {
+                const passoDiv = document.createElement('div');
+                passoDiv.className = 'passo-item';
+                
+                let html = `<strong>${passo.titulo}</strong>`;
+                
+                if (passo.conteudo) {
+                    html += `<div>${passo.conteudo}</div>`;
+                }
+                
+                if (passo.formula) {
+                    html += `<div class="formula">${passo.formula}</div>`;
+                }
+                
+                if (passo.resultado) {
+                    html += `<div class="resultado">${passo.resultado}</div>`;
+                }
+                
+                passoDiv.innerHTML = html;
+                passosContainer.appendChild(passoDiv);
+            });
+            
+            document.getElementById('passos').classList.add('show');
+        }
+
+        function formatarMoeda(valor) {
+            return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function limparDados() {
+            // Limpa os campos de entrada
+            document.getElementById('salario').value = '';
+            document.getElementById('previdencia').value = '0';
+            document.getElementById('aposentado').value = 'NAO';
+            document.getElementById('dependentes').value = '0';
+            
+            // Esconde os resultados
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('passos').classList.remove('show');
+            document.getElementById('btnPdf').classList.remove('show');
+            
+            // Limpa os dados do cálculo
+            dadosCalculo = null;
+            
+            // Foca no campo de salário
+            document.getElementById('salario').focus();
+        }
+
+        function salvarPDF() {
+            if (!dadosCalculo) {
+                alert('Nenhum cálculo disponível para gerar PDF.');
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            const dataHora = new Date().toLocaleString('pt-BR');
+            let y = 20;
+            
+            // Título
+            doc.setFontSize(18);
+            doc.setTextColor(17, 153, 142);
+            doc.text('Cálculo de IRRF 2026', 105, y, { align: 'center' });
+            
+            y += 10;
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Gerado em: ${dataHora}`, 105, y, { align: 'center' });
+            
+            y += 15;
+            
+            // Resumo
+            doc.setFontSize(14);
+            doc.setTextColor(0);
+            doc.text('Resumo do Cálculo', 20, y);
+            y += 10;
+            
+            doc.setFontSize(11);
+            doc.text(`Salário Bruto: ${formatarMoeda(dadosCalculo.salario)}`, 25, y);
+            y += 7;
+            doc.text(`Previdência (INSS/RPPS): ${formatarMoeda(dadosCalculo.previdencia)}`, 25, y);
+            y += 7;
+            doc.text(`Aposentado/Pensionista: ${dadosCalculo.aposentado}`, 25, y);
+            y += 7;
+            doc.text(`Número de Dependentes: ${dadosCalculo.dependentes}`, 25, y);
+            y += 7;
+            doc.text(`Dedução Dependentes: ${formatarMoeda(dadosCalculo.deducaoDependentes)}`, 25, y);
+            y += 7;
+            doc.text(`Tipo de Dedução: ${dadosCalculo.tipoDeducao}`, 25, y);
+            y += 7;
+            doc.text(`Dedução Aplicada: ${formatarMoeda(dadosCalculo.deducaoAplicada)}`, 25, y);
+            y += 7;
+            doc.text(`Dedução Aposentado/Pensionista: ${formatarMoeda(dadosCalculo.deducaoAposentadoAplicada)}`, 25, y);
+            y += 7;
+            doc.text(`Base de Cálculo: ${formatarMoeda(dadosCalculo.baseCalculo)}`, 25, y);
+            y += 7;
+            doc.text(`Alíquota: ${dadosCalculo.aliquota}%`, 25, y);
+            y += 7;
+            doc.text(`Dedução Simplificada: ${formatarMoeda(dadosCalculo.deducao)}`, 25, y);
+            y += 7;
+            doc.text(`Redutor Adicional: ${formatarMoeda(dadosCalculo.redutorAdicional)}`, 25, y);
+            y += 10;
+            
+            doc.setFontSize(12);
+            doc.setTextColor(17, 153, 142);
+            doc.text(`IRRF a Pagar: ${formatarMoeda(dadosCalculo.irrf)}`, 25, y);
+            y += 7;
+            doc.text(`Salário Líquido: ${formatarMoeda(dadosCalculo.salarioLiquido)}`, 25, y);
+            
+            y += 15;
+            
+            // Memória de Cálculo
+            doc.setFontSize(14);
+            doc.setTextColor(0);
+            doc.text('Memória de Cálculo', 20, y);
+            y += 10;
+            
+            doc.setFontSize(10);
+            dadosCalculo.passos.forEach((passo, index) => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                doc.setTextColor(76, 175, 80);
+                doc.setFontSize(11);
+                doc.text(passo.titulo, 25, y);
+                y += 7;
+                
+                doc.setTextColor(0);
+                doc.setFontSize(10);
+                
+                if (passo.conteudo) {
+                    const linhas = doc.splitTextToSize(passo.conteudo.replace(/<br>/g, ' ').replace(/<[^>]*>/g, ''), 160);
+                    linhas.forEach(linha => {
+                        if (y > 270) {
+                            doc.addPage();
+                            y = 20;
+                        }
+                        doc.text(linha, 30, y);
+                        y += 5;
+                    });
+                }
+                
+                if (passo.formula) {
+                    const linhas = doc.splitTextToSize(passo.formula.replace(/<br>/g, ' '), 160);
+                    linhas.forEach(linha => {
+                        if (y > 270) {
+                            doc.addPage();
+                            y = 20;
+                        }
+                        doc.text(linha, 30, y);
+                        y += 5;
+                    });
+                }
+                
+                if (passo.resultado) {
+                    if (y > 270) {
+                        doc.addPage();
+                        y = 20;
+                    }
+                    doc.setTextColor(17, 153, 142);
+                    doc.text(passo.resultado.replace(/<[^>]*>/g, ''), 30, y);
+                    doc.setTextColor(0);
+                    y += 5;
+                }
+                
+                y += 5;
+            });
+            
+            // Salva o PDF
+            doc.save(`IRRF_2026_${new Date().getTime()}.pdf`);
+        }
+
+        // Permite calcular com Enter
+        document.getElementById('salario').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calcularIRRF();
+        });
+        
+        document.getElementById('previdencia').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calcularIRRF();
+        });
+        
+        document.getElementById('dependentes').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') calcularIRRF();
+        });
+    </script>
+</body>
+</html>
